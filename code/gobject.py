@@ -22,16 +22,8 @@ class GameObject:
         self._collided = False
 
     @property
-    def x(self):
-        return self._x
-
-    @x.setter
-    def x(self, value):
-        self._x = value
-
-    @property
     def xy(self):
-        return {self._x, self._y}
+        return self._x, self._y
 
     @property
     def image(self):
