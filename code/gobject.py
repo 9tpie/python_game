@@ -30,12 +30,12 @@ class GameObject:
         self._x = value
 
     @property
-    def y(self):
-        return self._y
+    def xy(self):
+        return {self._x, self._y}
 
-    @y.setter
-    def y(self, value):
-        self._y = value
+    @property
+    def image(self):
+        return self._image
 
     def to_the_left(self):
         self._changeX = -self._moveScale
@@ -56,18 +56,18 @@ class GameObject:
         self._changeY = 0
 
     def update(self):
-        self.x += self._changeX
-        self.y += self._changeY
+        self._x += self._changeX
+        self._y += self._changeY
 
-        if self.x > self._objectBound[1]:
-            self.x = self._objectBound[1]
-        if self.x < self._objectBound[0]:
-            self.x = self._objectBound[0]
+        if self._x > self._objectBound[1]:
+            self._x = self._objectBound[1]
+        if self._x < self._objectBound[0]:
+            self._x = self._objectBound[0]
 
-        if self.y > self._objectBound[3]:
-            self.y = self._objectBound[3]
-        if self.y < self._objectBound[2]:
-            self.y = self._objectBound[2]
+        if self._y > self._objectBound[3]:
+            self._y = self._objectBound[3]
+        if self._y < self._objectBound[2]:
+            self._y = self._objectBound[2]
 
     def _collided_(self, it):
         distance = math.hypot(self._center[0]-it.center[0], self._center[1]-it.center[1])
