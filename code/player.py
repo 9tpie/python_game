@@ -22,8 +22,8 @@ class Player(GameObject):
         else:
             self._x = xy[0]
             self._y = xy[1]
-        self._objectBound = (10, self._playground[0]-self._image.get_rect().w+230,
-                             10, self._playground[1]-self._image.get_rect().h-250)
+        self._objectBound = (10, self._playground[0]-self._image.get_rect().w-10,
+                             10, self._playground[1]-self._image.get_rect().h-10)
 
     def update(self):
         GameObject.update(self)

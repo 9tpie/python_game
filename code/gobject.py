@@ -29,6 +29,18 @@ class GameObject:
     def image(self):
         return self._image
 
+    @property
+    def available(self):
+        return self._available
+
+    @property
+    def x(self):
+        return self._x
+
+    @property
+    def y(self):
+        return self._y
+
     def to_the_left(self):
         self._changeX = -self._moveScale
 
