@@ -4,6 +4,7 @@ from typing import Union
 from pygame.surface import Surface, SurfaceType
 import pygame
 import math
+from missle import MyMissile
 
 
 class Player(GameObject):
@@ -15,6 +16,7 @@ class Player(GameObject):
         self._image = pygame.image.load(self.__player_path)
         self._center = self._x + self._image.get_rect().w/2, self._y + self._image.get_rect().h/2
         self._radius = 0.3*math.hypot(self._image.get_rect().w, self._image.get_rect().h)
+        self._score = 0
 
         if xy is None:
             self._x = (self._playground[0] - self._image.get_rect().w)/2
@@ -37,3 +39,9 @@ class Player(GameObject):
                 m.hp = -1
                 m.collided = True
                 m.available = False
+
+    def update_score(self, enemies):
+        for e in enemies:
+            if self._collided_(e):
+                self._score -= 10
+

@@ -20,6 +20,7 @@ class GameObject:
         self._center = None
         self._radius = None
         self._collided = False
+        self._score = 0
 
     @property
     def xy(self):
@@ -80,6 +81,14 @@ class GameObject:
     @collided.setter
     def collided(self, value):
         self._collided = value
+
+    @property
+    def score(self):
+        return self._score
+
+    @score.setter
+    def score(self, value):
+        self._score = value
 
     def to_the_left(self):
         self._changeX = -self._moveScale

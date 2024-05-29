@@ -22,6 +22,8 @@ pygame.display.set_icon(icon)
 background = pygame.Surface(screen.get_size())
 background = background.convert()
 background.fill((50, 50, 50))
+# 建立文字
+head_font = pygame.font.SysFont("", 60)
 
 running = True
 fps = 120
@@ -42,7 +44,18 @@ explosion = pygame.USEREVENT + 3
 # 建立敵人，每秒一台
 pygame.time.set_timer(createEnemy, 1000)
 
+# 設置倒數計時器
+start_ticks = pygame.time.get_ticks()
+countdown_time = 30  # 倒數30秒
+
 while running:
+
+    # 計算剩餘時間
+    seconds = (pygame.time.get_ticks() - start_ticks) / 1000
+    countdown = countdown_time - seconds
+    if countdown <= 0:
+        running = False
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -62,7 +75,7 @@ while running:
             if event.key == pygame.K_SPACE:
                 m_x = player.x + 20  # 第一個飛彈
                 m_y = player.y
-                Missiles.append(MyMissile(xy=(m_x, m_y), playground=playground, sensitivity=movingScale))
+                Missiles.append(MyMissile(playground, (m_x, m_y), movingScale))
                 m_x = player.x + 80   # 第二個飛彈
                 Missiles.append(MyMissile(playground, (m_x, m_y), movingScale))
                 pygame.time.set_timer(launchMissile, 400)  # 每400ms發射一組
@@ -93,13 +106,21 @@ while running:
         if event.type == createEnemy:
             Enemies.append(Enemy(playground=playground, sensitivity=movingScale))
 
+    # 分數文字, 倒數文字
+    game_text_1 = head_font.render("Your score: " + str(player.score), True, (255, 255, 255))
+    countdown_text = head_font.render("Time left: " + str(int(countdown)), True, (255, 255, 255))
+    # 更新背景
     screen.blit(background, (0, 0))
 
-    # 偵測碰撞
+    # 偵測碰撞, 玩家更新分數
     player.collision_detect(Enemies)
+    player.update_score(Enemies)
 
+    # 射中敵人, 玩家更新分數
     for m in Missiles:
         m.collision_detect(Enemies)
+        if m.collided:
+            player.score += 5
 
     for e in Enemies:
         if e.collided:
@@ -124,6 +145,8 @@ while running:
         b.update()
         screen.blit(b.image, b.xy)
 
+    screen.blit(game_text_1, (30, 30))
+    screen.blit(countdown_text, (30, 90))
     pygame.display.update()
     dt = clock.tick(fps)
 

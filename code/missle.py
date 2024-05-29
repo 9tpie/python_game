@@ -1,5 +1,4 @@
 import pygame.image
-
 from gobject import GameObject
 from pathlib import Path
 
