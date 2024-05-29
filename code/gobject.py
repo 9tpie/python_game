@@ -29,17 +29,57 @@ class GameObject:
     def image(self):
         return self._image
 
+    @image.setter
+    def image(self, value):
+        self._image = value
+ 
     @property
     def available(self):
         return self._available
+
+    @available.setter
+    def available(self, value):
+        self._available = value
 
     @property
     def x(self):
         return self._x
 
+    @x.setter
+    def x(self, value):
+        self._x = value
+
     @property
     def y(self):
         return self._y
+
+    @y.setter
+    def y(self, value):
+        self._y = value
+
+    @property
+    def center(self):
+        return self._center
+
+    @center.setter
+    def center(self, value):
+        self._center = value
+
+    @property
+    def radius(self):
+        return self._radius
+
+    @radius.setter
+    def radius(self, value):
+        self._radius = value
+
+    @property
+    def collided(self):
+        return self._collided
+
+    @collided.setter
+    def collided(self, value):
+        self._collided = value
 
     def to_the_left(self):
         self._changeX = -self._moveScale

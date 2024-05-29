@@ -2,6 +2,8 @@ import pygame
 from pathlib import Path
 from player import Player
 from missle import MyMissile
+from enemy import Enemy
+from explosion import Explosion
 from gobject import GameObject
 parent_path = Path(__file__).parents[1]
 image_path = parent_path/'res'
@@ -31,9 +33,16 @@ keyCountX = 0
 keyCountY = 0
 
 Missiles = []
+Enemies = []
+Boom = []
+
+launchMissile = pygame.USEREVENT + 1
+createEnemy = pygame.USEREVENT + 2
+explosion = pygame.USEREVENT + 3
+# 建立敵人，每秒一台
+pygame.time.set_timer(createEnemy, 1000)
 
 while running:
-    launchMissile = pygame.USEREVENT + 1
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -81,13 +90,40 @@ while running:
             m_x = player.xy[0] + 80
             Missiles.append(MyMissile(xy=(m_x, m_y), playground=playground, sensitivity=movingScale))
 
+        if event.type == createEnemy:
+            Enemies.append(Enemy(playground=playground, sensitivity=movingScale))
+
     screen.blit(background, (0, 0))
+
+    # 偵測碰撞
+    player.collision_detect(Enemies)
+
+    for m in Missiles:
+        m.collision_detect(Enemies)
+
+    for e in Enemies:
+        if e.collided:
+            Boom.append(Explosion(e.center))
+
+    # 貼圖 (missile -> enemy -> player -> boom)
     Missiles = [item for item in Missiles if item.available]
     for m in Missiles:
         m.update()
         screen.blit(m.image, m.xy)
+
+    Enemies = [item for item in Enemies if item.available]
+    for e in Enemies:
+        e.update()
+        screen.blit(e.image, e.xy)
+
     player.update()
     screen.blit(player.image, player.xy)
+
+    Boom = [item for item in Boom if item.available]
+    for b in Boom:
+        b.update()
+        screen.blit(b.image, b.xy)
+
     pygame.display.update()
     dt = clock.tick(fps)
 
