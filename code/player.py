@@ -44,4 +44,3 @@ class Player(GameObject):
         for e in enemies:
             if self._collided_(e):
                 self._score -= 10
-

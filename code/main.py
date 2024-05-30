@@ -41,12 +41,15 @@ Boom = []
 launchMissile = pygame.USEREVENT + 1
 createEnemy = pygame.USEREVENT + 2
 explosion = pygame.USEREVENT + 3
+
 # 建立敵人，每秒一台
 pygame.time.set_timer(createEnemy, 1000)
 
 # 設置倒數計時器
 start_ticks = pygame.time.get_ticks()
-countdown_time = 30  # 倒數30秒
+countdown_time = 10  # 倒數30秒
+
+time_up = False
 
 while running:
 
@@ -54,7 +57,10 @@ while running:
     seconds = (pygame.time.get_ticks() - start_ticks) / 1000
     countdown = countdown_time - seconds
     if countdown <= 0:
-        running = False
+        time_up = True
+        countdown = 0
+    else:
+        time_up = False
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -106,25 +112,30 @@ while running:
         if event.type == createEnemy:
             Enemies.append(Enemy(playground=playground, sensitivity=movingScale))
 
-    # 分數文字, 倒數文字
+    # 文字
     game_text_1 = head_font.render("Your score: " + str(player.score), True, (255, 255, 255))
     countdown_text = head_font.render("Time left: " + str(int(countdown)), True, (255, 255, 255))
+    Time_Up_text = head_font.render("Time Up!", True, (50, 50, 50))
+    Final_score_text = head_font.render("Your Final Score is " + str(player.score), True, (50, 50, 50))
     # 更新背景
     screen.blit(background, (0, 0))
 
-    # 偵測碰撞, 玩家更新分數
-    player.collision_detect(Enemies)
-    player.update_score(Enemies)
+    # 在時間內繼續遊戲
+    if time_up is False:
 
-    # 射中敵人, 玩家更新分數
-    for m in Missiles:
-        m.collision_detect(Enemies)
-        if m.collided:
-            player.score += 5
+        # 偵測碰撞, 玩家更新分數
+        player.collision_detect(Enemies)
+        player.update_score(Enemies)
 
-    for e in Enemies:
-        if e.collided:
-            Boom.append(Explosion(e.center))
+        # 射中敵人, 玩家更新分數
+        for m in Missiles:
+            m.collision_detect(Enemies)
+            if m.collided:
+                player.score += 5
+
+        for e in Enemies:
+            if e.collided:
+                Boom.append(Explosion(e.center))
 
     # 貼圖 (missile -> enemy -> player -> boom)
     Missiles = [item for item in Missiles if item.available]
@@ -146,7 +157,17 @@ while running:
         screen.blit(b.image, b.xy)
 
     screen.blit(game_text_1, (30, 30))
-    screen.blit(countdown_text, (30, 90))
+    screen.blit(countdown_text, (700, 30))
+
+    if time_up is True:
+        rect_width = 500
+        rect_height = 200
+        rect_x = 370
+        rect_y = 480
+        pygame.draw.rect(screen, (255, 255, 0), (rect_x, rect_y, rect_width, rect_height))
+        screen.blit(Time_Up_text, (380, 500))
+        screen.blit(Final_score_text, (380, 600))
+
     pygame.display.update()
     dt = clock.tick(fps)
 
