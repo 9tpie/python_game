@@ -8,6 +8,8 @@ from gobject import GameObject
 parent_path = Path(__file__).parents[1]
 image_path = parent_path/'res'
 icon_path = image_path/'airplaneicon.png'
+Background_music_path = image_path/'I_go_meow.ogg'
+Bonk_path = image_path/'bonk.wav'
 
 pygame.init()
 
@@ -47,9 +49,15 @@ pygame.time.set_timer(createEnemy, 1000)
 
 # 設置倒數計時器
 start_ticks = pygame.time.get_ticks()
-countdown_time = 10  # 倒數30秒
+countdown_time = 30  # 倒數30秒
 
 time_up = False
+
+# background music
+pygame.mixer.init()
+pygame.mixer.music.load(Background_music_path)
+pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.play()
 
 while running:
 
@@ -136,6 +144,9 @@ while running:
         for e in Enemies:
             if e.collided:
                 Boom.append(Explosion(e.center))
+                bonk_sound = pygame.mixer.Sound(Bonk_path)
+                bonk_sound.set_volume(0.8)
+                bonk_sound.play()
 
     # 貼圖 (missile -> enemy -> player -> boom)
     Missiles = [item for item in Missiles if item.available]
